@@ -5,17 +5,16 @@ import { COMMAND_DESCRIPTION } from "@/constants/terminal";
 
 export const helpResponse: ReactNode = (
     <TerminalResponse>
-        <div className="flex flex-col gap-1">
-            <p className="mb-2">Available commands:</p>
-
+        <div className="flex flex-col">
+            <p>Available commands:</p> <br />
             {Object.entries(COMMAND_DESCRIPTION).map(
                 ([command, description]) => (
-                    <div key={command} className="flex gap-4">
-                        <span className="text-zinc-300 w-16 shrink-0">
+                    <div key={command} className="flex">
+                        <span className="w-16 shrink-0">
                             {command}
                         </span>
 
-                        <span className="font-bold">
+                        <span>
                             {description}
                         </span>
                     </div>

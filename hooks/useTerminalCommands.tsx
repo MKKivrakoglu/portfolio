@@ -1,11 +1,12 @@
 
 import { ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { COMMAND, COMMAND_DESCRIPTION, RESPONSE } from "@/constants/terminal";
+import { COMMAND, COMMAND_DESCRIPTION, RESPONSE, ROUTE_DESCRIPTIONS } from "@/constants/terminal";
 import TerminalResponse from "@/components/terminal/TerminalResponse";
 
 const ROUTES = {
     home: "/",
+    terminal: "/terminal",
     f1drive: "/f1drive",
 } as const;
 
@@ -15,6 +16,30 @@ type CommandDefinition = {
     description: string;
     execute: CommandHandler;
 };
+
+export const WELCOME_RESPONSE = (
+    <TerminalResponse>
+        <div className="flex flex-col">
+            <p className="">
+                Welcome to Kemal's Portfolio Terminal
+            </p>
+
+            <p className="">
+                Interactive portfolio navigation
+            </p>
+
+            <div className="" />
+
+            <p className="">
+                Type <span className="font-bold">help</span> to see available commands.
+            </p>
+
+            <p className="">
+                Type <span className="font-bold">ls</span> to list available routes.
+            </p>
+        </div>
+    </TerminalResponse>
+);
 
 export function useTerminalCommands(clearTerminal: () => void) {
     const router = useRouter();
@@ -46,7 +71,7 @@ export function useTerminalCommands(clearTerminal: () => void) {
 
                         {Object.entries(commands).map(([name, definition]) => (
                             <div key={name} className="flex gap-4">
-                                <span className="w-24 shrink-0 text-zinc-300">
+                                <span className="w-24 shrink-0">
                                     {name}
                                 </span>
 
@@ -56,6 +81,33 @@ export function useTerminalCommands(clearTerminal: () => void) {
                     </div>
                 </TerminalResponse>
             ),
+        },
+
+        [COMMAND.EXPLAIN]: {
+            description: COMMAND_DESCRIPTION[COMMAND.EXPLAIN],
+            execute: (args) => {
+                const route = args[0];
+
+                if (!route || args.length !== 1) {
+                    return <TerminalResponse>Usage: explain &lt;route&gt;</TerminalResponse>;
+                }
+
+                if (!Object.prototype.hasOwnProperty.call(ROUTES, route)) {
+                    return <TerminalResponse>Unknown route: {route}</TerminalResponse>;
+                }
+
+                const path = ROUTES[route as keyof typeof ROUTES];
+                const description = ROUTE_DESCRIPTIONS[route as keyof typeof ROUTE_DESCRIPTIONS];
+
+                return (
+                    <TerminalResponse>
+                        <div className="flex gap-4">
+                            <span className="w-32 shrink-0">{route} ({path})</span>
+                            <span>{description}</span>
+                        </div>
+                    </TerminalResponse>
+                );
+            },
         },
 
         open: {
@@ -100,7 +152,7 @@ export function useTerminalCommands(clearTerminal: () => void) {
         if (!command) {
             return (
                 <TerminalResponse>
-                    Unknown command: {name}. Type 'help' for options.
+                    command not found: {name}. Type 'help' for options.
                 </TerminalResponse>
             );
         }

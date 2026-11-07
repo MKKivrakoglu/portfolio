@@ -1,4 +1,5 @@
 'use client'
+import { COLOR_PALETTE } from "@/constants/terminal";
 import { ReactNode } from "react";
 
 type ResponseProps = {
@@ -7,7 +8,7 @@ type ResponseProps = {
 
 export default function TerminalResponse({ children }: ResponseProps) {
     return (
-        <div className="-my-1 text-sm text-zinc-200 font-normal">
+        <div className={`text-md ${COLOR_PALETTE.white}`}>
             {children}
         </div>
     );
